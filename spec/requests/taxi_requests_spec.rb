@@ -30,7 +30,8 @@ RSpec.describe 'TaxiRequest API', type: :request do
   end
 
   describe 'POST /api/taxi-requests' do
-    let(:valid_payload) { {address: '서울특별시 강남구 테헤란로'} }
+    let(:valid_payload) { {passenger_id: 44, address: '서울특별시 강남구 테헤란로'} }
+    let(:invalid_payload) { {passenger_id: 44, address: Faker::String.random(length: 101)} }
 
     context 'when the request is valid' do
       before { post '/api/taxi-requests', params: valid_payload }
@@ -40,20 +41,20 @@ RSpec.describe 'TaxiRequest API', type: :request do
       end
 
       it 'returns status code 201' do
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(201)
       end
 
     end
 
     context 'when the requested address has invalid length over 100' do
-      before { post '/api/taxi-requests', params: {address: Faker::Lorem.characters(101)} }
+      before { post '/api/taxi-requests', params: invalid_payload }
 
       it 'returns status code 400' do
         expect(response).to have_http_status(400)
       end
 
       it 'returns a validation failure message' do
-        expect(response.body).to match(/Validation failed/)
+        expect(response.body).to match(/Validation failed: address's length should be less than 100/)
       end
     end
 
