@@ -6,8 +6,8 @@ module Api
     end
 
     def create
-      address = taxi_request_params['address']
-      raise ExceptionHandler::ValidationFailedError, "Validation failed: address's length should be less than 100" if address.length > 100
+      raise ExceptionHandler::ValidationFailedError,
+            "Validation failed: address's length should be less than 100" if taxi_request_params['address'].length > 100
 
       rest_attributes = {'requested_at': DateTime.now}
       saved = TaxiRequest.create!(taxi_request_params.merge(rest_attributes))
