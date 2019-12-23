@@ -6,7 +6,7 @@ RSpec.describe 'TaxiRequest API', type: :request do
   let!(:taxi_requests) { create_list(:taxi_request, LIST_SIZE) }
 
   describe 'GET /api/taxi-requests' do
-    before { get '/api/tax-requests' }
+    before { get '/api/taxi-requests' }
 
     it 'returns taxi-requests' do
       expect(json).not_to be_empty

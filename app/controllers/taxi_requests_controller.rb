@@ -1,2 +1,0 @@
-class TaxiRequestsController < ApplicationController
-end
