@@ -14,14 +14,13 @@ RSpec.describe 'TaxiRequest API', type: :request do
     end
 
     context 'sorted by' do
-      let!(:old_request) { taxi_requests.sort_by { |r| r.requested_at }.reverse.last }
-      let!(:recent_request) { taxi_requests.sort_by { |r| r.requested_at }.reverse.first }
+      let!(:sorted_requests) { taxi_requests.sort_by { |r| r.requested_at }.reverse }
+      let!(:old_request) { sorted_requests.last }
+      let!(:recent_request) { sorted_requests.first }
 
       it 'requested_at desc' do
-        requested_at_list_from_json = json.map { |r| r["requested_at"].to_s }
-
-        expect(requested_at_list_from_json[0]).to eq(recent_request.requested_at.strftime("%FT%T.%LZ"))
-        expect(requested_at_list_from_json[LIST_SIZE - 1]).to eq(old_request.requested_at.strftime("%FT%T.%LZ"))
+        expect(json[0]['requested_at']).to eq(recent_request.requested_at.strftime("%FT%T.%LZ"))
+        expect(json[LIST_SIZE - 1]['requested_at']).to eq(old_request.requested_at.strftime("%FT%T.%LZ"))
       end
     end
 
