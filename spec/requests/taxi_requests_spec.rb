@@ -14,13 +14,13 @@ RSpec.describe 'TaxiRequest API', type: :request do
     end
 
     context 'sorted by' do
-      let!(:sorted_requests) { taxi_requests.sort_by { |r| r.requested_at }.reverse }
+      let!(:sorted_requests) { taxi_requests.sort_by { |r| r.created_at }.reverse }
       let!(:old_request) { sorted_requests.last }
       let!(:recent_request) { sorted_requests.first }
 
-      it 'requested_at desc' do
-        expect(json[0]['requested_at']).to eq(recent_request.requested_at.strftime("%FT%T.%LZ"))
-        expect(json[LIST_SIZE - 1]['requested_at']).to eq(old_request.requested_at.strftime("%FT%T.%LZ"))
+      it 'created_at desc' do
+        expect(json[0]['created_at']).to eq(recent_request.created_at.strftime("%FT%T.%LZ"))
+        expect(json[LIST_SIZE - 1]['created_at']).to eq(old_request.created_at.strftime("%FT%T.%LZ"))
       end
     end
 
@@ -57,8 +57,26 @@ RSpec.describe 'TaxiRequest API', type: :request do
         expect(response.body).to match(/Validation failed: address's length should be less than 100/)
       end
     end
+  end
 
+  describe 'PUT /api/taxi-requests/:id' do
+    let(:taxi_request_id) { taxi_requests.first.id }
+    let(:valid_payload) { {driver_id: taxi_requests.last.id} } # todo 인증이 추가되면, valid_payload 는 필요없어질 것이다.
+    let(:not_exist_taxi_request_id) { taxi_requests.last.id + 1 }
 
+    context 'when the record exists' do
+      before { put "/api/taxi-requests/#{taxi_request_id}", params: valid_payload }
+
+      it 'updates the record' do
+        expect(json['driver_id']).to eq(valid_payload['driver_id'])
+      end
+
+    end
+
+    context 'when the record does not exist' do
+      before { put "/api/taxi-requests/#{not_exist_taxi_request_id}", params: valid_payload }
+
+    end
   end
 
 end

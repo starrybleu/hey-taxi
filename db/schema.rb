@@ -10,14 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_23_065116) do
+ActiveRecord::Schema.define(version: 2019_12_23_092955) do
 
   create_table "taxi_requests", force: :cascade do |t|
     t.integer "passenger_id"
     t.string "address"
-    t.datetime "requested_at"
-    t.integer "driver_id", null: true
-    t.datetime "assigned_at", null: true
+    t.integer "driver_id"
+    t.datetime "assigned_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
