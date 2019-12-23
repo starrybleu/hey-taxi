@@ -27,6 +27,37 @@ RSpec.describe 'TaxiRequest API', type: :request do
     it 'returns status code 200' do
       expect(response).to have_http_status(200)
     end
+  end
+
+  describe 'POST /api/taxi-requests' do
+    let(:valid_payload) { {address: '서울특별시 강남구 테헤란로'} }
+
+    context 'when the request is valid' do
+      before { post '/api/taxi-requests', params: valid_payload }
+
+      it 'creates a tax-request' do
+        expect(json['address']).to eq('서울특별시 강남구 테헤란로')
+      end
+
+      it 'returns status code 201' do
+        expect(response).to have_http_status(200)
+      end
+
+    end
+
+    context 'when the requested address has invalid length over 100' do
+      before { post '/api/taxi-requests', params: {address: Faker::Lorem.characters(101)} }
+
+      it 'returns status code 400' do
+        expect(response).to have_http_status(400)
+      end
+
+      it 'returns a validation failure message' do
+        expect(response.body).to match(/Validation failed/)
+      end
+    end
+
 
   end
+
 end
