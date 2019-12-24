@@ -62,7 +62,7 @@ RSpec.describe 'TaxiRequest API', type: :request do
   describe 'PUT /api/taxi-requests/:id' do
     let(:taxi_request_id) { taxi_requests.first.id }
     let(:valid_payload) { { driver_id: 99 } } # todo 인증이 추가되면, valid_payload 는 필요없어질 것이다.
-    let(:not_exist_taxi_request_id) { taxi_requests.last.id + 1 }
+    let(:not_exist_taxi_request_id) { taxi_requests.last.id + 99 }
     let!(:already_assigned_request) { create(:already_assigned_request) }
 
     context 'when the record exists' do
