@@ -1,4 +1,3 @@
 class TaxiRequest < ApplicationRecord
-  validates_presence_of :passenger_id
-  validates_presence_of :address
+  validates :passenger_id, :address, presence: true
 end
