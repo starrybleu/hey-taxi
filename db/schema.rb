@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_24_004659) do
+ActiveRecord::Schema.define(version: 2019_12_24_052108) do
 
   create_table "taxi_requests", force: :cascade do |t|
     t.integer "passenger_id"
@@ -24,7 +24,7 @@ ActiveRecord::Schema.define(version: 2019_12_24_004659) do
   create_table "users", force: :cascade do |t|
     t.string "email"
     t.string "password_digest"
-    t.string "type"
+    t.string "role"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
