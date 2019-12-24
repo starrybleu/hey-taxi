@@ -1,0 +1,137 @@
+AllCops:
+  TargetRubyVersion: 2.3
+  TargetRailsVersion: 4.2
+
+##########
+# Enable #
+##########
+
+# Rails용 교정도 허용
+Rails:
+  Enabled: true
+
+###########
+# Disable #
+###########
+
+# Non-ascii 문자도 허용한다
+Style/AsciiComments:
+  Enabled: false
+
+# Class body 시작과 끝에는 공백을 넣는다
+Layout/EmptyLinesAroundClassBody:
+  Enabled: false
+
+# Module body 시작과 끝에는 공백을 넣는다
+Layout/EmptyLinesAroundModuleBody:
+  Enabled: false
+
+# 클래스 주석은 필요한 경우에만 추가한다
+Style/Documentation:
+  Enabled: false
+
+Lint/SuppressedException:
+  Exclude:
+    - bin/*
+
+# Test code에 대해서는 block 길이 신경쓰지 말자
+Metrics/BlockLength:
+  Exclude:
+    - test/**/*.rb
+    - spec/**/*.rb
+    
+# 2글자 이하 변수명도 허용
+Naming/MethodParameterName:
+  Enabled: false
+
+##################
+# Configurations #
+##################
+
+Rails/UnknownEnv:
+  Environments:
+    - development
+    - test
+    - production
+    - integration
+    - alpha
+    - bravo
+    - staging
+
+# 한 줄의 최대 길이 140자
+Metrics/LineLength:
+  Max: 140
+  # To make it possible to copy or click on URIs in the code, we allow lines
+  # containing a URI to be longer than Max.
+  AllowHeredoc: true
+  AllowURI: true
+  URISchemes:
+    - http
+    - https
+
+# Class body의 최대 길이는 200줄
+Metrics/ClassLength:
+  CountComments: false  # count full line comments?
+  Max: 200
+  Exclude:
+    - test/**/*.rb
+
+
+# Module body의 최대 길이는 200줄
+Metrics/ModuleLength:
+  CountComments: false  # count full line comments?
+  Max: 200
+  Exclude:
+    - test/**/*.rb
+
+# Method의 최대 길이는 15줄 제한
+Metrics/MethodLength:
+  CountComments: false  # count full line comments?
+  Max: 20
+
+# ABC 크기는 26
+Metrics/AbcSize:
+  # The ABC size is a calculated magnitude, so this number can be a Fixnum or
+  # a Float.
+  Max: 26
+
+Metrics/CyclomaticComplexity:
+  Max: 10
+  
+Metrics/PerceivedComplexity:
+  Max: 10
+
+# Predicate name에서 has_로 시작하는건 허용
+Naming/PredicateName:
+  # Predicate name prefixes.
+  NamePrefix:
+    - is_
+    # - has_
+    - have_
+  # Predicate name prefixes that should be removed.
+  ForbiddenPrefixes:
+    - is_
+    # - has_
+    - have_
+  # Predicate names which, despite having a blacklisted prefix, or no ?,
+  # should still be accepted
+  AllowedMethods:
+    - is_a?
+  # Exclude Rspec specs because there is a strong convetion to write spec
+  # helpers in the form of `have_something` or `be_something`.
+  Exclude:
+    - 'spec/**/*'
+    - 'test/**/*'
+
+# % delimiter는 원래 하던 것 처럼 소괄호로
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    default: ()
+    '%i': '()'
+    '%I': '()'
+    '%r': '{}'
+    '%w': '()'
+    '%W': '()'
+    
+Layout/TrailingEmptyLines:
+  EnforcedStyle: final_newline
