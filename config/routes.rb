@@ -4,5 +4,6 @@ Rails.application.routes.draw do
   namespace :api, defaults: {format: :json} do
     resources :taxi_requests, path: '/taxi-requests', only: %i(index create update)
     resources :users, only: :create
+    post '/users/signin', to: 'authentication#authenticate'
   end
 end

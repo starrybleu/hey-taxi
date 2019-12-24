@@ -5,6 +5,8 @@ module ExceptionHandler
   end
   class UnprocessableError < StandardError
   end
+  class InvalidCredentialError < StandardError
+  end
 
   included do
     rescue_from ActiveRecord::RecordNotFound do |e|
@@ -28,6 +30,10 @@ module ExceptionHandler
 
     rescue_from ExceptionHandler::UnprocessableError do |e|
       render json: { message: e.message }, status: :unprocessable_entity
+    end
+
+    rescue_from ExceptionHandler::InvalidCredentialError do |e|
+      render json: { message: e.message }, status: :forbidden
     end
   end
 end
