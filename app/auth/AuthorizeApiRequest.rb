@@ -16,16 +16,16 @@ class AuthorizeApiRequest
   end
 
   def match_token
-    requested_token_value = http_auth_header
+    requested_token_value = extract_token
     token = Token.find_by!(access_token: requested_token_value)
-    raise ExceptionHandler::InvalidCredentialError, 'Expired token' if token.expired_at < DateTime.now
+    raise ExceptionHandler::InvalidTokenError, 'Expired token' if token.expired_at < DateTime.now
     token.user_id
   end
 
-  def http_auth_header
+  def extract_token
     if headers[:Authorization].present?
       return headers[:Authorization].split(' ').last
     end
-    raise(ExceptionHandler::InvalidCredentialError, 'Missing token')
+    raise(ExceptionHandler::InvalidTokenError, 'Missing token')
   end
 end

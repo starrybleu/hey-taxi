@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe 'TaxiRequest API', type: :request do
   let(:user) { create(:user) }
   let(:token) { create(:token, user_id: user.id) }
-  let(:headers) { { Authorization: token.access_token } }
+  let(:headers) { { Authorization: "bearer #{token.access_token}" } }
 
   describe 'GET /api/taxi-requests' do
     LIST_SIZE = 10
@@ -99,6 +99,17 @@ RSpec.describe 'TaxiRequest API', type: :request do
 
         it 'returns a update failure message' do
           expect(response.body).to match(/Already assigned/)
+        end
+      end
+
+      context 'but token is not given' do
+        before { put "/api/taxi-requests/#{taxi_request_id}/assign" }
+        it 'returns status code 401' do
+          expect(response).to have_http_status(401)
+        end
+
+        it 'returns a update failure message' do
+          expect(response.body).to match(/Missing token/)
         end
       end
     end
