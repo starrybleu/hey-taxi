@@ -1,5 +1,7 @@
 module Api
   class UsersController < ApplicationController
+    skip_before_action :authorize_request, only: :create
+
     def create
       saved = User.create!(create_params)
       render json: saved, status: :created

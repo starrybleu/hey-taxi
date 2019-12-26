@@ -7,6 +7,8 @@ module ExceptionHandler
   end
   class InvalidCredentialError < StandardError
   end
+  class InvalidTokenError < StandardError
+  end
 
   included do
     rescue_from ActiveRecord::RecordNotFound do |e|
@@ -36,6 +38,10 @@ module ExceptionHandler
 
     rescue_from ExceptionHandler::InvalidCredentialError do |e|
       render json: { message: e.message }, status: :forbidden
+    end
+
+    rescue_from ExceptionHandler::InvalidTokenError do |e|
+      render json: { message: e.message }, status: :unauthorized
     end
   end
 end

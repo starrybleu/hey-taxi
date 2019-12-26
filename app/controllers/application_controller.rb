@@ -8,6 +8,6 @@ class ApplicationController < ActionController::API
 
   def authorize_request
     # todo session -> token 으로 변경
-    @current_user = User.find_by(id: session[:user_id])
+    @current_user = AuthorizeApiRequest.new(request.headers).authorize[:user]
   end
 end

@@ -1,11 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe 'TaxiRequest API', type: :request do
-  let!(:taxi_requests) { create_list(:taxi_request, LIST_SIZE) }
+  let(:user) { create(:user) }
+  let(:token) { create(:token, user_id: user.id) }
+  let(:headers) { { Authorization: token.access_token } }
 
   describe 'GET /api/taxi-requests' do
     LIST_SIZE = 10
-    before { get '/api/taxi-requests' }
+    let!(:taxi_requests) { create_list(:taxi_request, LIST_SIZE) }
+    before { get '/api/taxi-requests', headers: headers }
 
     it 'returns taxi-requests' do
       expect(json).not_to be_empty
@@ -34,7 +37,7 @@ RSpec.describe 'TaxiRequest API', type: :request do
     context 'when the request is valid' do
       let(:valid_payload) { { passenger_id: 44, address: '서울특별시 강남구 테헤란로' } }
       def api_call
-        post '/api/taxi-requests', params: valid_payload
+        post '/api/taxi-requests', params: valid_payload, headers: headers
       end
 
       it 'creates a tax-request' do
@@ -55,7 +58,7 @@ RSpec.describe 'TaxiRequest API', type: :request do
 
     context 'when the requested address has invalid length over 100' do
       def api_call
-        post '/api/taxi-requests', params: invalid_payload
+        post '/api/taxi-requests', params: invalid_payload, headers: headers
       end
 
       it 'returns status code 400' do
@@ -74,23 +77,22 @@ RSpec.describe 'TaxiRequest API', type: :request do
     end
   end
 
-  describe 'PUT /api/taxi-requests/:id' do
+  describe 'PUT /api/taxi-requests/:id/assign' do
     let!(:taxi_request_to_update) { create(:taxi_request) }
     let(:taxi_request_id) { taxi_request_to_update.id }
-    let(:valid_payload) { { driver_id: 99 } } # todo 인증이 추가되면, valid_payload 는 필요없어질 것이다.
     let(:not_exist_taxi_request_id) { 0 }
     let!(:already_assigned_request) { create(:already_assigned_request) }
 
     context 'when the record exists' do
-      before { put "/api/taxi-requests/#{taxi_request_id}", params: valid_payload }
+      before { put "/api/taxi-requests/#{taxi_request_id}/assign", headers: headers }
 
       it 'updates the record for unassigned request' do
-        expect(json['driver_id']).to eq(valid_payload[:driver_id])
+        expect(json['driver_id']).to eq(user.id)
         expect(json['assigned_at']).not_to be_nil
       end
 
       context 'but for already assigned request' do
-        before { put "/api/taxi-requests/#{already_assigned_request.id}", params: valid_payload }
+        before { put "/api/taxi-requests/#{already_assigned_request.id}/assign", headers: headers }
         it 'returns status code 422' do
           expect(response).to have_http_status(422)
         end
@@ -102,7 +104,7 @@ RSpec.describe 'TaxiRequest API', type: :request do
     end
 
     context 'when the record does not exist' do
-      before { put "/api/taxi-requests/#{not_exist_taxi_request_id}", params: valid_payload }
+      before { put "/api/taxi-requests/#{not_exist_taxi_request_id}/assign", headers: headers }
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)

@@ -11,11 +11,19 @@ RSpec.describe 'User API', type: :request do
     end
 
     context 'when credential is valid' do
-      before { post '/api/users/signin', params: valid_credentials, headers: content_type_json_header }
+      def api_call
+        post '/api/users/signin', params: valid_credentials, headers: content_type_json_header
+      end
 
       it 'returns a token id in response header' do
+        api_call
+        puts "\n\n $$$$ json['access_token'] : #{json['access_token']} \n\n"
         expect(json['access_token']).not_to be_empty
         expect(json['expired_at']).not_to be_empty
+      end
+
+      it 'assures a token created' do
+        expect { api_call }.to change(Token.all, :count).by(1)
       end
     end
 

@@ -5,7 +5,8 @@ module Api
     def authenticate
       user = User.find_by!(email: auth_params[:email])
       if user.authenticate(auth_params[:password])
-        session[:user_id] = user.id # todo session -> token 으로 변경해야 함
+        token = Token.create!(user_id: user.id, access_token: SecureRandom.uuid.gsub(/\-/, ''), expired_at: 1.day.after)
+        render json: token.as_json(only: %i(access_token expired_at)), status: :ok
       else
         raise ExceptionHandler::InvalidCredentialError, 'email and password does not match'
       end
