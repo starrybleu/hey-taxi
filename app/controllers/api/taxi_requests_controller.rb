@@ -6,10 +6,6 @@ module Api
     end
 
     def create
-      if taxi_request_params['address'].length > 100
-        raise ExceptionHandler::ValidationFailedError,
-              "Validation failed: address's length should be less than 100"
-      end
       saved = TaxiRequest.create!(taxi_request_params)
       render json: saved, status: :created
     end

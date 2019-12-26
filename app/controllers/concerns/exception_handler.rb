@@ -19,6 +19,8 @@ module ExceptionHandler
         render(json: { message: 'Email should be correct formatted' }, status: :bad_request)
       elsif /Validation failed: Email has already been taken/.match(e.message)
         render(json: { message: 'This email is duplicated' }, status: :bad_request)
+      elsif /Validation failed: Address is too long \(maximum is 100 characters\)/.match(e.message)
+        render(json: {message: "Validation failed: address's length should be less than 100" }, status: :bad_request)
       else
         render json: { message: e.message }, status: :unprocessable_entity
       end
