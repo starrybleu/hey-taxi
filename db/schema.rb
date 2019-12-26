@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_24_052108) do
+ActiveRecord::Schema.define(version: 2019_12_26_025502) do
 
   create_table "taxi_requests", force: :cascade do |t|
     t.integer "passenger_id"
@@ -21,6 +21,15 @@ ActiveRecord::Schema.define(version: 2019_12_24_052108) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "tokens", force: :cascade do |t|
+    t.string "access_token"
+    t.datetime "expired_at"
+    t.integer "user_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_tokens_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email"
     t.string "password_digest"
@@ -29,4 +38,5 @@ ActiveRecord::Schema.define(version: 2019_12_24_052108) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  add_foreign_key "tokens", "users"
 end

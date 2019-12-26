@@ -13,11 +13,11 @@ RSpec.describe 'User API', type: :request do
     context 'when credential is valid' do
       before { post '/api/users/signin', params: valid_credentials, headers: content_type_json_header }
 
-      it 'returns a session id in response header' do
-        expect(response.headers['Set-Cookie']).to match(/_hey_taxi_session/)
+      it 'returns a token id in response header' do
+        expect(json['access_token']).not_to be_empty
+        expect(json['expired_at']).not_to be_empty
       end
     end
-
 
     context 'when credential is invalid' do
       context 'when password does not match' do
