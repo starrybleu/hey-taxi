@@ -9,12 +9,6 @@ RSpec.describe 'User API', type: :request do
         password: user.password
       }.to_json
     end
-    let(:invalid_credentials) do
-      {
-        email: Faker::Internet.email,
-        password: Faker::Internet.password
-      }.to_json
-    end
 
     context 'when credential is valid' do
       before { post '/api/users/signin', params: valid_credentials, headers: content_type_json_header }
@@ -26,14 +20,48 @@ RSpec.describe 'User API', type: :request do
 
 
     context 'when credential is invalid' do
-      before { post '/api/users/signin', params: invalid_credentials, headers: content_type_json_header }
+      context 'when password does not match' do
+        let(:wrong_password_credentials) do
+          {
+            email: user.email,
+            password: Faker::Internet.password
+          }.to_json
+        end
+        def api_call
+          post '/api/users/signin', params: wrong_password_credentials, headers: content_type_json_header
+        end
 
-      it 'returns a failure message' do
-        expect(json['message']).to match(/email and password does not match/)
+        it 'returns a failure message' do
+          api_call
+          expect(json['message']).to match(/email and password does not match/)
+        end
+
+        it 'returns status code 403' do
+          api_call
+          expect(response).to have_http_status(403)
+        end
       end
 
-      it 'returns status code 403' do
-        expect(response).to have_http_status(403)
+      context 'when user not found' do
+        let(:not_existing_email_credentials) do
+          {
+            email: 'not_exist@email.kr',
+            password: Faker::Internet.password
+          }.to_json
+        end
+        def api_call
+          post '/api/users/signin', params: not_existing_email_credentials, headers: content_type_json_header
+        end
+
+        it 'returns a failure message' do
+          api_call
+          expect(json['message']).to match(/Couldn't find User/)
+        end
+
+        it 'returns status code 404' do
+          api_call
+          expect(response).to have_http_status(404)
+        end
       end
     end
   end
