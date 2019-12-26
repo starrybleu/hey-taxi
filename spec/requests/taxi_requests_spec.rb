@@ -29,31 +29,47 @@ RSpec.describe 'TaxiRequest API', type: :request do
   end
 
   describe 'POST /api/taxi-requests' do
-    let(:valid_payload) { { passenger_id: 44, address: '서울특별시 강남구 테헤란로' } }
     let(:invalid_payload) { { passenger_id: 44, address: Faker::String.random(length: 101) } }
 
     context 'when the request is valid' do
-      before { post '/api/taxi-requests', params: valid_payload }
+      let(:valid_payload) { { passenger_id: 44, address: '서울특별시 강남구 테헤란로' } }
+      def api_call
+        post '/api/taxi-requests', params: valid_payload
+      end
 
       it 'creates a tax-request' do
+        api_call
         expect(json['address']).to eq('서울특별시 강남구 테헤란로')
       end
 
       it 'returns status code 201' do
+        api_call
         expect(response).to have_http_status(201)
+      end
+
+      it 'assert model actually created' do
+        expect { api_call }.to change(TaxiRequest.all, :count).by(1)
       end
 
     end
 
     context 'when the requested address has invalid length over 100' do
-      before { post '/api/taxi-requests', params: invalid_payload }
+      def api_call
+        post '/api/taxi-requests', params: invalid_payload
+      end
 
       it 'returns status code 400' do
+        api_call
         expect(response).to have_http_status(400)
       end
 
       it 'returns a validation failure message' do
+        api_call
         expect(response.body).to match(/Validation failed: address's length should be less than 100/)
+      end
+
+      it 'assert model actually not created' do
+        expect { api_call }.to change(TaxiRequest.all, :count).by(0)
       end
     end
   end
@@ -61,7 +77,7 @@ RSpec.describe 'TaxiRequest API', type: :request do
   describe 'PUT /api/taxi-requests/:id' do
     let(:taxi_request_id) { taxi_requests.first.id }
     let(:valid_payload) { { driver_id: 99 } } # todo 인증이 추가되면, valid_payload 는 필요없어질 것이다.
-    let(:not_exist_taxi_request_id) { taxi_requests.last.id + 99 }
+    let(:not_exist_taxi_request_id) { 0 }
     let!(:already_assigned_request) { create(:already_assigned_request) }
 
     context 'when the record exists' do
