@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe 'User API', type: :request do
@@ -15,9 +17,8 @@ RSpec.describe 'User API', type: :request do
         post '/api/users/signin', params: valid_credentials, headers: content_type_json_header
       end
 
-      it 'returns a token id in response header' do
+      it 'returns a token id in response body' do
         api_call
-        puts "\n\n $$$$ json['access_token'] : #{json['access_token']} \n\n"
         expect(json['access_token']).not_to be_empty
         expect(json['expired_at']).not_to be_empty
       end

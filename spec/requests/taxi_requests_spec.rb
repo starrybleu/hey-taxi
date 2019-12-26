@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe 'TaxiRequest API', type: :request do
@@ -53,7 +55,6 @@ RSpec.describe 'TaxiRequest API', type: :request do
       it 'assert model actually created' do
         expect { api_call }.to change(TaxiRequest.all, :count).by(1)
       end
-
     end
 
     context 'when the requested address has invalid length over 100' do
@@ -122,5 +123,4 @@ RSpec.describe 'TaxiRequest API', type: :request do
       end
     end
   end
-
 end

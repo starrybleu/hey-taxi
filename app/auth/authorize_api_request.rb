@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 class AuthorizeApiRequest
   def initialize(headers = {})
     @headers = headers
   end
 
   def authorize
-    {user: user}
+    { user: user }
   end
 
   private
@@ -19,13 +21,13 @@ class AuthorizeApiRequest
     requested_token_value = extract_token
     token = Token.find_by!(access_token: requested_token_value)
     raise ExceptionHandler::InvalidTokenError, 'Expired token' if token.expired_at < DateTime.now
+
     token.user_id
   end
 
   def extract_token
-    if headers[:Authorization].present?
-      return headers[:Authorization].split(' ').last
-    end
+    return headers[:Authorization].split(' ').last if headers[:Authorization].present?
+
     raise(ExceptionHandler::InvalidTokenError, 'Missing token')
   end
 end

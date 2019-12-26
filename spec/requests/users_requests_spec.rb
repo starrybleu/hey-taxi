@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe 'User API', type: :request do
-
   describe 'POST /api/users' do
     let(:user) { build(:user) }
     let(:invalid_payload) { { email: 'not_email', password: 'foo_bar', role: 'driver' } }
@@ -19,7 +20,10 @@ RSpec.describe 'User API', type: :request do
       context 'but duplicate email' do
         let(:already_exists) { create(:already_existing_user) }
         let(:valid_payload_dup_email) do
-          attributes_for(:user, email: already_exists.email, password: 'foo_bar', role: 'driver', password_confirmation: already_exists.password)
+          attributes_for(:user,
+                         email: already_exists.email,
+                         password: 'foo_bar', role: 'driver',
+                         password_confirmation: already_exists.password)
         end
 
         before { post '/api/users', params: valid_payload_dup_email.to_json, headers: content_type_json_header }
