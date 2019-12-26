@@ -1,11 +1,10 @@
 require 'rails_helper'
 
-LIST_SIZE = 10
-
 RSpec.describe 'TaxiRequest API', type: :request do
   let!(:taxi_requests) { create_list(:taxi_request, LIST_SIZE) }
 
   describe 'GET /api/taxi-requests' do
+    LIST_SIZE = 10
     before { get '/api/taxi-requests' }
 
     it 'returns taxi-requests' do
